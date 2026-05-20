@@ -35,7 +35,7 @@ export const UserEntity = new EntitySchema({
     createdAt: {
       name: "created_at",
       type: "timestamp",
-      createdDate: true, //Auto current time addition
+      createdDate: new Date(), //Auto current time addition
     }
   }
 })
