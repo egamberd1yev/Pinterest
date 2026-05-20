@@ -11,13 +11,12 @@ app.post("/api/test-user", async (req, res) => {
       try {
         const { username, email, password } = req.body;
 
-        // TypeORM orqali bazaga ma'lumot yozish
         const userRepository = AppDataSource.getRepository(UserEntity);
         
         const newUser = userRepository.create({
           username,
           email,
-          password, // Hozircha sinov uchun shundoq ochiq yozamiz (bcrypt'siz)
+          password, 
         });
 
         await userRepository.save(newUser);
