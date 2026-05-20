@@ -1,5 +1,28 @@
 {
   "dependencies": {
     "express": "^5.2.1"
+  },
+  "name": "pinterest",
+  "version": "1.0.0",
+  "main": "app.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "nodemon src/app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/egamberd1yev/Pinterest.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/egamberd1yev/Pinterest/issues"
+  },
+  "homepage": "https://github.com/egamberd1yev/Pinterest#readme",
+  "description": "",
+  "devDependencies": {
+    "nodemon": "^3.1.14"
   }
 }
