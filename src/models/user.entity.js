@@ -1,8 +1,8 @@
 import { EntitySchema } from "typeorm";
 
 export const UserEntity = new EntitySchema({
-  name: "User", //klasssss name
-  tableName: "users", //postgress table name
+  name: "User", 
+  tableName: "users", 
   columns: {
     id: {
       primary: true,
