@@ -40,4 +40,4 @@ AppDataSource.initialize()
   })
   .catch((error) => {
     console.error("There was an error connecting.", error);
-  })
+})

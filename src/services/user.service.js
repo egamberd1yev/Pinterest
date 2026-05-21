@@ -1,4 +1,4 @@
-import * as userRepository from "../"
+import * as userRepository from "../repositories/user.repo.js"
 import jwt from "jsonwebtoken"
 
 import bcrypt from "bcrypt"
