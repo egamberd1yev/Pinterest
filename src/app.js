@@ -17,7 +17,7 @@ app.use((err, req, res, next) => {
   });
 });
 
-
+const PORT = process.env.PORT || 5000
 
 AppDataSource.initialize()
   .then(()=> {
@@ -29,4 +29,4 @@ AppDataSource.initialize()
   })
   .catch((error) => {
     console.error("There was an error connecting.", error);
-  })
+})

@@ -4,7 +4,7 @@ import jwt from "jsonwebtoken"
 import bcrypt from "bcrypt"
 
 
-export const createUsers = async (data) => {
+export const createUser = async (data) => {
   const {username, email, password} = data
 
   const existingUser = await userRepository.findUserByEmail(email)
@@ -23,6 +23,7 @@ export const createUsers = async (data) => {
     password: hashedPassword
   })
 
-  return sanitizeUser(user)
+  const { password: _, ...userWithoutPassword } = user
+  return { user: userWithoutPassword }
 }
 

@@ -1,11 +1,11 @@
 import { ILike } from "typeorm";
-import { AppDataSource } from "../config/db";
-import { UserEntity } from "../models/user.entity";
+import { AppDataSource } from "../config/db.js";
+import { UserEntity } from "../models/user.entity.js";
 
 const getRepository = () => AppDataSource.getRepository(UserEntity)
 
 export const findUserByEmail = async (email) => {
-	const userRepository = getUserRepository()
+	const userRepository = getRepository()
 
 	return userRepository.findOne({
 		where: { email: email.toLowerCase() },
