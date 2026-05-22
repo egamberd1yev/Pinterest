@@ -6,7 +6,7 @@ import bcrypt from "bcrypt"
 export const createUser = async (data) => {
   const {username, email, password} = data
 
-  const existingUser = await userRepo.findUserByEmail(email)
+  const existingUser = await userRepo.findUserByUsername(email)
   
   if (existingUser) {
     const error = new Error("Email already exists")
@@ -26,8 +26,8 @@ export const createUser = async (data) => {
   return { user: userWithoutPassword }
 }
 
-export const login = async ({email, password}) => {
-  const user = await userRepo.findUserByEmail(email) 
+export const login = async ({username, password}) => {
+  const user = await userRepo.findUserByUsername(username) 
 
   if (!user) throw new Error("Invalid credentials")
 
