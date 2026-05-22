@@ -17,18 +17,16 @@ app.use((err, req, res, next) => {
   });
 });
 
-
+const PORT = process.env.PORT || 5000
 
 AppDataSource.initialize()
-.then(()=> {
-  console.log("Postgress Connecting Successfully");
-  
-  app.listen(PORT, ()=> {
-    console.log(`Server running http://localhost:${PORT}`);
-  });
-})
-.catch((error) => {
-  console.error("There was an error connecting.", error);
-})
+  .then(()=> {
+    console.log("Postgress Connecting Successfully");
 
-const PORT = process.env.PORT || 5000;
+    app.listen(PORT, ()=> {
+      console.log(`Server running http://localhost:${PORT}`);
+    });
+  })
+  .catch((error) => {
+    console.error("There was an error connecting.", error);
+})

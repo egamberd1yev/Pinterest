@@ -5,7 +5,7 @@ import { UserEntity } from "../models/user.entity.js";
 const getRepository = () => AppDataSource.getRepository(UserEntity)
 
 export const findUserByEmail = async (email) => {
-	const userRepo = getRepository()
+	const userRepository = getUserRepository()
 
 	return userRepo.findOne({
 		where: { email: email.toLowerCase() },

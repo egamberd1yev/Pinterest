@@ -21,7 +21,7 @@ export const createUser = async (data) => {
     email,
     password: hashedPassword
   })
-  
+
   const { password: _, ...userWithoutPassword } = user
   return { user: userWithoutPassword }
 }
