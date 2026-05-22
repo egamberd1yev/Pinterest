@@ -1,13 +1,12 @@
-import * as userRepository from "../repositories/user.repo.js"
+import * as userRepo from "../repositories/user.repo.js"
 import jwt from "jsonwebtoken"
-
 import bcrypt from "bcrypt"
 
 
-export const createUsers = async (data) => {
+export const createUser = async (data) => {
   const {username, email, password} = data
 
-  const existingUser = await userRepository.findUserByEmail(email)
+  const existingUser = await userRepo.findUserByEmail(email)
   
   if (existingUser) {
     const error = new Error("Email already exists")
@@ -17,12 +16,12 @@ export const createUsers = async (data) => {
 
   const hashedPassword = await bcrypt.hash(password, 10)
 
-  const user = await userRepository.createUser({
+  const user = await userRepo.createUser({
     username,
     email,
     password: hashedPassword
   })
-
-  return sanitizeUser(user)
+  
+  const { password: _, ...userWithoutPassword } = user
+  return { user: userWithoutPassword }
 }
-
