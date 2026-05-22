@@ -5,10 +5,17 @@ import { UserEntity } from "../models/user.entity.js";
 const getRepository = () => AppDataSource.getRepository(UserEntity)
 
 export const findUserByEmail = async (email) => {
-	const userRepository = getUserRepository()
+	const userRepo = getRepository()
 
 	return userRepo.findOne({
 		where: { email: email.toLowerCase() },
+    select: {
+      id: true,
+      username: true,
+      email: true,
+      password: true,
+      role: true
+    }
 	})
 }
 
@@ -21,4 +28,9 @@ export const createUser = async (userData) => {
   })
 
   return userRepo.save(newUser)
+}
+
+export const updateUser = async (id, data) => {
+  const userRepo = getRepository()
+  return userRepo.update(id, data)
 }

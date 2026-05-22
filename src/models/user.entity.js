@@ -32,9 +32,18 @@ export const UserEntity = new EntitySchema({
       default: "user",
       nullable: false
     },
+    refreshToken: {        // ← qo'shildi
+      type: "varchar",
+      length: 500,
+      nullable: true,      // ← login qilmagan userda bo'lmaydi
+    },
     createdAt: {
       type: "timestamp",
       createDate: true,
+    },
+    updatedAt: {           // ← qo'shildi
+      type: "timestamp",
+      updateDate: true,
     },
   }
 })
