@@ -18,6 +18,7 @@
 // src/db.js
 import { DataSource } from "typeorm";
 import { UserEntity } from "../models/user.entity.js";
+import { ImageEntity } from "../models/image.entity.js";
 import dotenv from "dotenv";
 
 dotenv.config();
@@ -31,5 +32,5 @@ export const AppDataSource = new DataSource({
   database: process.env.DB_NAME || "pinterest_db",
   synchronize: true,
   logging: true,
-  entities: [UserEntity],
+  entities: [UserEntity, ImageEntity],
 });
