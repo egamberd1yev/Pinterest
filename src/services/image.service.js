@@ -1,3 +1,4 @@
+import { title } from "process"
 import * as imageRepo from "../repositories/image.repo.js"
 import fs from "fs"
 
@@ -8,7 +9,10 @@ export const uploadImage = async (file, userId) => {
     throw error
   }
 
-  const image = await imageRepo.saveImage({
+const image = await imageRepo.saveImage({
+    title: body.title,
+    description: body.description || "",
+    tags: body.tags ? body.tags.split(",") : [],
     filename: file.filename,
     filepath: file.path,
     mimetype: file.mimetype,

@@ -4,10 +4,23 @@ export const ImageEntity = new EntitySchema({
   name: "Image",
   tableName: "images",
   columns: {
- id: {
+    id: {
       primary: true,
       type: "int",
       generated: true,
+    },
+    title: {
+      type: "varchar",
+      length: 255,
+      nullable: true, // Qisqacha nom (qidiruv uchun)
+    },
+    description: {
+      type: "text", // varchar o'rniga text qildik, xohlagancha uzun yozish uchun
+      nullable: true,
+    },
+    tags: {
+      type: "simple-array", // TypeORM o'zi ["tabiat", "qora", "mashina"] massivini string qilib bazaga yozadi
+      nullable: true,
     },
     filename: {
       type: "varchar",
@@ -27,14 +40,20 @@ export const ImageEntity = new EntitySchema({
     createdAt: {
       type: "timestamp",
       createDate: true,
-    }
+    },
   },
   relations: {
     user: {
       type: "many-to-one",
       target: "User",
-      joinColumn: true,
+      joinColumn: { name: "user_id" }, 
       nullable: false,
-    }
-  }
-})
+    },
+    // category: {
+    //   type: "many-to-one",
+    //   target: "Category", // Buning uchun alohida Category entity ochishing kerak bo'ladi
+    //   joinColumn: { name: "category_id" },
+    //   nullable: true,
+    // }
+  } 
+});

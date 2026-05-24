@@ -5,13 +5,13 @@ import {
    getImageById,
    deleteImage } from "../controller/image.controller.js"
 import { upload } from "../middleware/upload.middleware.js"
-import { authMiddleware } from "../middleware/auth.middleware.js" // ← qo'shildi
+import { authMiddleware } from "../middleware/auth.middleware.js"
 
 const router = Router()
 
-router.post("/upload", authMiddleware, upload.single("image"), uploadImage) // ← authMiddleware qo'shildi
+router.post("/upload", authMiddleware, upload.single("image"), uploadImage)
 router.get("/", getAllImages)
 router.get("/:id", getImageById)
 router.delete("/:id", deleteImage)
 
-export default router
+export default router   

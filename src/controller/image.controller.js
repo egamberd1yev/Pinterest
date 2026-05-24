@@ -1,11 +1,20 @@
 import * as imageService from "../services/image.service.js"
 
+// export const uploadImage = async (req, res, next) => {
+//   try {
+//     const image = await imageService.uploadImage(req.file, req.user.id)
+//     res.status(201).json(image)
+//   } catch (error) {
+//     next(error)
+//   }
+// }
+
 export const uploadImage = async (req, res, next) => {
   try {
-    const image = await imageService.uploadImage(req.file, req.user.id)
+    const image = await imageService.uploadImage(req.file, req.body, req.user.id)
     res.status(201).json(image)
-  } catch (error) {
-    next(error)
+  }catch (error) {
+    next (error)
   }
 }
 
