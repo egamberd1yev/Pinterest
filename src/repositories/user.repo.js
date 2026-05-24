@@ -19,6 +19,7 @@ export const findUserByUsername = async (username) => {
 	})
 }
 
+
 export const createUser = async (userData) => {
   const userRepo = getRepository()
 
@@ -28,6 +29,14 @@ export const createUser = async (userData) => {
   })
 
   return userRepo.save(newUser)
+}
+
+export const findUserByEmail = async (email) => {
+  const userRepo = getRepository()
+
+  return userRepo.findOne({
+    where: { email: email.toLowerCase() },
+  })
 }
 
 export const updateUser = async (id, data) => {

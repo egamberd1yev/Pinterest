@@ -23,13 +23,7 @@ export const findImageById = async (id) => {
 }
 
 export const deleteImage = async (id) => {
-  const imageRepo = getImageRepository()
+  const imageRepo = getImageRepository();
 
-  if (!image) {
-    const error = new Error("Rasm topilmadi")
-    error.statusCode = 404
-    throw error
-  }
-
-  return imageRepo.delete(id)
-}
+  return await imageRepo.delete(id);
+};

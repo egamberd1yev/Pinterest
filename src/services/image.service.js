@@ -1,27 +1,26 @@
 import { title } from "process"
 import * as imageRepo from "../repositories/image.repo.js"
 import fs from "fs"
-
-export const uploadImage = async (file, userId) => {
+import path from "path";
+export const uploadImage = async (file, body, userId) => {
   if (!file) {
     const error = new Error("Fayl yuklanmadi")
     error.statusCode = 400
     throw error
   }
+  const reqBody = body || {};
 
-const image = await imageRepo.saveImage({
-    title: body.title,
-    description: body.description || "",
-    tags: body.tags ? body.tags.split(",") : [],
+  return await imageRepo.saveImage({
+    title: reqBody.title || "No Name Pin",
+    description: reqBody.description || "",
+    tags: reqBody.tags ? reqBody.tags.split(",") : [],
     filename: file.filename,
     filepath: file.path,
     mimetype: file.mimetype,
     size: file.size,
     user: { id: userId }
-  })
-
-  return image
-}
+  });
+};
 
 export const getAllImages = async () => {
   return imageRepo.findAllImages()
@@ -45,8 +44,17 @@ export const deleteImage = async (id) => {
     throw error
   }
 
-  // Faylni diskdan o'chirish
-  fs.unlinkSync(image.filepath)
+  // 2. Loyihaning asosiy papkasidan turib uploads ichidagi rasmga aniq yo'l quramiz
+  // Bu kod hamma operatsion tizimda (Windows, Mac) aniq manzilni hisoblab beradi
+  const absolutePath = path.resolve(image.filepath);
 
-  return imageRepo.deleteImage(id)
-}
+  // 3. Endi tekshiramiz va o'chiramiz
+  if (fs.existsSync(absolutePath)) {
+    fs.unlinkSync(absolutePath);
+    console.log("Rasm diskdan muvaffaqiyatli o'chirildi! 🚀");
+  } else {
+    console.warn(`Ogohlantirish: Fayl topilmadi, baribir bazadan o'chadi: ${absolutePath}`);
+  }
+
+  return imageRepo.deleteImage(id);
+};

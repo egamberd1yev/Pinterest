@@ -2,6 +2,13 @@ import * as userRepo from "../repositories/user.repo.js"
 import jwt from "jsonwebtoken"
 import bcrypt from "bcrypt"
 
+const sanitizeUser = (user) => {
+	const userObject = user.toObject ? user.toObject() : user
+	delete userObject.password
+
+	return userObject
+}
+
 
 export const createUser = async (data) => {
   const {username, email, password} = data
@@ -41,6 +48,44 @@ export const login = async ({username, password}) => {
 
   const { password: _, ...userWithoutPassword } = user
   return { user: userWithoutPassword, accesToken, refreshToken }
+}
+
+export const register = async (data) => {
+  const {username, email, password, role} = data
+
+  const existingUser = await userRepo.findUserByEmail(email)
+  if (existingUser) {
+    const error = new Error("User already exists")
+    error.statusCode = 400
+    throw error
+  }
+
+  const hashedPassword = await bcrypt.hash(password, 10)
+
+  const user = await userRepo.createUser({
+    username,
+    email,
+    password: hashedPassword,
+    role
+  })
+
+  const accessToken = jwt.sign(
+    { id: user.id, role: user.role },
+    process.env.JWT_SECRET,
+    { expiresIn: "15m" },
+  )
+
+  const refreshToken = jwt.sign(
+    { id: user.id},
+    process.env.JWT_REFRESH_SECRET,
+    { expiresIn: "7d" },
+  )
+
+  return {
+    user: sanitizeUser(user),
+    accessToken,
+    refreshToken
+  }
 }
 
 const generateAccessToken = (user) => {
