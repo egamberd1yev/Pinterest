@@ -1,7 +1,7 @@
 import * as imageRepo from "../repositories/image.repo.js"
 import fs from "fs"
 
-export const uploadImage = async (file, userId) => {
+export const uploadImage = async (file, userId, body) => {
   if (!file) {
     const error = new Error("Fayl yuklanmadi")
     error.statusCode = 400
