@@ -1,26 +1,26 @@
-import { title } from "process"
 import * as imageRepo from "../repositories/image.repo.js"
 import fs from "fs"
-import path from "path";
-export const uploadImage = async (file, body, userId) => {
+
+export const uploadImage = async (file, userId) => {
   if (!file) {
     const error = new Error("Fayl yuklanmadi")
     error.statusCode = 400
     throw error
   }
-  const reqBody = body || {};
 
-  return await imageRepo.saveImage({
-    title: reqBody.title || "No Name Pin",
-    description: reqBody.description || "",
-    tags: reqBody.tags ? reqBody.tags.split(",") : [],
+const image = await imageRepo.saveImage({
+    title: body.title,
+    description: body.description || "",
+    tags: body.tags ? body.tags.split(",") : [],
     filename: file.filename,
     filepath: file.path,
     mimetype: file.mimetype,
     size: file.size,
     user: { id: userId }
-  });
-};
+  })
+
+  return image
+}
 
 export const getAllImages = async () => {
   return imageRepo.findAllImages()
