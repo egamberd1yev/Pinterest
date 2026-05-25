@@ -25,12 +25,3 @@ Bu Node.js, Express, TypeORM va PostgreSQL yordamida qurilgan, rasm ulashish va 
 * **Database ORM:** TypeORM (PostgreSQL)
 * **Xavfsizlik & Auth:** JWT (jsonwebtoken), bcrypt
 * **Fayllar:** Multer
-
----
-
-## 📦 Loyihani kompyuterda ishga tushirish (Setup)
-
-### 1. Loyihani klon qiling:
-```bash
-git clone <sening-github-repo-linkingiz>
-cd pinterest-backend
