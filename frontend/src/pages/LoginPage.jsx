@@ -1,8 +1,4 @@
 import { useState } from 'react'
-import {
-  Box, Flex, VStack, HStack, Input, Button, Text
-} from '@chakra-ui/react'
-import { toaster } from '../components/ui/toaster' 
 import { useNavigate } from 'react-router-dom'
 import api from '../service/api'
 
@@ -12,182 +8,196 @@ export default function LoginPage() {
   const [loginData, setLoginData] = useState({ username: '', password: '' })
   const [registerData, setRegisterData] = useState({ username: '', email: '', password: '' })
   const [loading, setLoading] = useState(false)
+  const [error, setError] = useState('')
 
   const handleLogin = async () => {
     setLoading(true)
+    setError('')
     try {
       const res = await api.post('/user/login', loginData)
-      localStorage.setItem('accessToken', res.data.accessToken) // To'g'rilandi: accesToken -> accessToken
+      localStorage.setItem('accessToken', res.data.accesToken)
       localStorage.setItem('refreshToken', res.data.refreshToken)
-      
-      // toaster'dan foydalanish usuli:
-      toaster.create({ title: 'Xush kelibsiz!', type: 'success', duration: 2000 })
       navigate('/')
     } catch (err) {
-      toaster.create({ title: err.response?.data?.message || 'Xato yuz berdi', type: 'error', duration: 3000 })
+      setError(err.response?.data?.message || 'Xato yuz berdi')
     } finally {
-      loading && setLoading(false)
+      setLoading(false)
     }
   }
 
   const handleRegister = async () => {
     setLoading(true)
+    setError('')
     try {
       await api.post('/user/register', registerData)
-      toaster.create({ title: "Ro'yxatdan o'tdingiz!", type: 'success', duration: 2000 })
       navigate('/')
     } catch (err) {
-      toaster.create({ title: err.response?.data?.message || 'Xato yuz berdi', type: 'error', duration: 3000 })
+      setError(err.response?.data?.message || 'Xato yuz berdi')
     } finally {
-      loading && setLoading(false)
+      setLoading(false)
     }
   }
 
   return (
-    <Flex minH="100vh">
-      {/* Chap tomon */}
-      <Flex
-        flex={1} bg="#E60023" direction="column"
-        align="center" justify="center" p={10}
-        display={{ base: 'none', md: 'flex' }}
-      >
-        <Text fontSize="6xl">📌</Text>
-        <Text fontSize="3xl" fontWeight="bold" color="white" textAlign="center" mt={4}>
+    <div className="flex min-h-screen">
+      {/* Chap tomon - qizil panel */}
+      <div className="hidden md:flex flex-1 bg-[#E60023] flex-col items-center justify-center p-10">
+        <span className="text-7xl">📌</span>
+        <h1 className="text-3xl font-bold text-white text-center mt-4">
           Ilhom olish, saqlash va ulashish
-        </Text>
-        <Text fontSize="md" color="whiteAlpha.800" mt={3} textAlign="center">
+        </h1>
+        <p className="text-white/75 mt-3 text-center">
           Dunyodagi eng yaxshi g'oyalar shu yerda
-        </Text>
-      </Flex>
+        </p>
+        {/* Mini pin preview */}
+        <div className="grid grid-cols-2 gap-2 mt-8 w-44">
+          <div className="h-20 bg-white/20 rounded-xl"></div>
+          <div className="h-14 bg-white/20 rounded-xl"></div>
+          <div className="h-14 bg-white/20 rounded-xl"></div>
+          <div className="h-20 bg-white/20 rounded-xl"></div>
+        </div>
+      </div>
 
-      {/* O'ng tomon */}
-      <Flex flex={1} direction="column" align="center" justify="center" p={8} bg="white">
-        <Text fontSize="4xl" color="#E60023" mb={6}>📌</Text>
+      {/* O'ng tomon - forma */}
+      <div className="flex flex-1 flex-col items-center justify-center p-8 bg-white">
+        <span className="text-5xl mb-6">📌</span>
 
-        {/* Tab tugmalari */}
-        <HStack mb={6} bg="gray.100" borderRadius="xl" p={1} w="100%" maxW="380px">
-          <Button
-            flex={1} borderRadius="lg" size="sm"
-            bg={activeTab === 'login' ? '#E60023' : 'transparent'}
-            color={activeTab === 'login' ? 'white' : 'gray.600'}
-            _hover={{ bg: activeTab === 'login' ? '#c0001d' : 'gray.200' }}
+        {/* Tablar */}
+        <div className="flex bg-gray-100 rounded-xl p-1 w-full max-w-sm mb-6">
+          <button
+            className={`flex-1 py-2 rounded-lg text-sm font-medium transition-all ${
+              activeTab === 'login' ? 'bg-[#E60023] text-white' : 'text-gray-600 hover:bg-gray-200'
+            }`}
             onClick={() => setActiveTab('login')}
           >
             Kirish
-          </Button>
-          <Button
-            flex={1} borderRadius="lg" size="sm"
-            bg={activeTab === 'register' ? '#E60023' : 'transparent'}
-            color={activeTab === 'register' ? 'white' : 'gray.600'}
-            _hover={{ bg: activeTab === 'register' ? '#c0001d' : 'gray.200' }}
+          </button>
+          <button
+            className={`flex-1 py-2 rounded-lg text-sm font-medium transition-all ${
+              activeTab === 'register' ? 'bg-[#E60023] text-white' : 'text-gray-600 hover:bg-gray-200'
+            }`}
             onClick={() => setActiveTab('register')}
           >
             Ro'yxat
-          </Button>
-        </HStack>
+          </button>
+        </div>
 
-        <Box w="100%" maxW="380px">
+        {/* Xato xabari */}
+        {error && (
+          <div className="w-full max-w-sm mb-4 p-3 bg-red-50 border border-red-200 text-red-600 text-sm rounded-xl">
+            {error}
+          </div>
+        )}
+
+        <div className="w-full max-w-sm">
           {/* Login */}
           {activeTab === 'login' && (
-            <VStack spacing={4}>
-              <Box w="full">
-                <Text fontSize="sm" mb={1} fontWeight="500">Foydalanuvchi nomi</Text>
-                <Input
+            <div className="flex flex-col gap-4">
+              <div>
+                <label className="text-sm font-medium text-gray-700 mb-1 block">
+                  Foydalanuvchi nomi
+                </label>
+                <input
+                  type="text"
                   placeholder="username"
                   value={loginData.username}
                   onChange={e => setLoginData({ ...loginData, username: e.target.value })}
-                  focusBorderColor="#E60023"
-                  borderRadius="xl"
+                  className="w-full px-4 py-2.5 border border-gray-300 rounded-xl text-sm focus:outline-none focus:border-[#E60023]"
                 />
-              </Box>
-              <Box w="full">
-                <Text fontSize="sm" mb={1} fontWeight="500">Parol</Text>
-                <Input
+              </div>
+              <div>
+                <label className="text-sm font-medium text-gray-700 mb-1 block">
+                  Parol
+                </label>
+                <input
                   type="password"
                   placeholder="••••••••"
                   value={loginData.password}
                   onChange={e => setLoginData({ ...loginData, password: e.target.value })}
-                  focusBorderColor="#E60023"
-                  borderRadius="xl"
                   onKeyDown={e => e.key === 'Enter' && handleLogin()}
+                  className="w-full px-4 py-2.5 border border-gray-300 rounded-xl text-sm focus:outline-none focus:border-[#E60023]"
                 />
-              </Box>
-              <Button
-                w="full" bg="#E60023" color="white"
-                borderRadius="full" _hover={{ bg: '#c0001d' }}
-                onClick={handleLogin} loading={loading}
+              </div>
+              <button
+                onClick={handleLogin}
+                disabled={loading}
+                className="w-full py-2.5 bg-[#E60023] text-white rounded-full font-medium hover:bg-[#c0001d] transition-colors disabled:opacity-60"
               >
-                Kirish
-              </Button>
-              <HStack w="full">
-                <Box flex={1} h="1px" bg="gray.200" />
-                <Text fontSize="sm" color="gray.400">yoki</Text>
-                <Box flex={1} h="1px" bg="gray.200" />
-              </HStack>
-              <Button w="full" variant="outline" borderRadius="full">
+                {loading ? 'Kirish...' : 'Kirish'}
+              </button>
+              <div className="flex items-center gap-3">
+                <div className="flex-1 h-px bg-gray-200"></div>
+                <span className="text-sm text-gray-400">yoki</span>
+                <div className="flex-1 h-px bg-gray-200"></div>
+              </div>
+              <button className="w-full py-2.5 border border-gray-300 rounded-full text-sm font-medium hover:bg-gray-50 transition-colors">
                 G — Google bilan kirish
-              </Button>
-              <Text fontSize="sm" color="gray.500" cursor="pointer" textDecoration="underline">
+              </button>
+              <p className="text-sm text-gray-500 text-center underline cursor-pointer">
                 Parolni unutdingizmi?
-              </Text>
-            </VStack>
+              </p>
+            </div>
           )}
 
           {/* Register */}
           {activeTab === 'register' && (
-            <VStack spacing={4}>
-              <Box w="full">
-                <Text fontSize="sm" mb={1} fontWeight="500">Foydalanuvchi nomi</Text>
-                <Input
+            <div className="flex flex-col gap-4">
+              <div>
+                <label className="text-sm font-medium text-gray-700 mb-1 block">
+                  Foydalanuvchi nomi
+                </label>
+                <input
+                  type="text"
                   placeholder="username"
                   value={registerData.username}
                   onChange={e => setRegisterData({ ...registerData, username: e.target.value })}
-                  focusBorderColor="#E60023"
-                  borderRadius="xl"
+                  className="w-full px-4 py-2.5 border border-gray-300 rounded-xl text-sm focus:outline-none focus:border-[#E60023]"
                 />
-              </Box>
-              <Box w="full">
-                <Text fontSize="sm" mb={1} fontWeight="500">Email</Text>
-                <Input
+              </div>
+              <div>
+                <label className="text-sm font-medium text-gray-700 mb-1 block">
+                  Email
+                </label>
+                <input
                   type="email"
                   placeholder="email@example.com"
                   value={registerData.email}
                   onChange={e => setRegisterData({ ...registerData, email: e.target.value })}
-                  focusBorderColor="#E60023"
-                  borderRadius="xl"
+                  className="w-full px-4 py-2.5 border border-gray-300 rounded-xl text-sm focus:outline-none focus:border-[#E60023]"
                 />
-              </Box>
-              <Box w="full">
-                <Text fontSize="sm" mb={1} fontWeight="500">Parol</Text>
-                <Input
+              </div>
+              <div>
+                <label className="text-sm font-medium text-gray-700 mb-1 block">
+                  Parol
+                </label>
+                <input
                   type="password"
                   placeholder="••••••••"
                   value={registerData.password}
                   onChange={e => setRegisterData({ ...registerData, password: e.target.value })}
-                  focusBorderColor="#E60023"
-                  borderRadius="xl"
                   onKeyDown={e => e.key === 'Enter' && handleRegister()}
+                  className="w-full px-4 py-2.5 border border-gray-300 rounded-xl text-sm focus:outline-none focus:border-[#E60023]"
                 />
-              </Box>
-              <Button
-                w="full" bg="#E60023" color="white"
-                borderRadius="full" _hover={{ bg: '#c0001d' }}
-                onClick={handleRegister} loading={loading}
+              </div>
+              <button
+                onClick={handleRegister}
+                disabled={loading}
+                className="w-full py-2.5 bg-[#E60023] text-white rounded-full font-medium hover:bg-[#c0001d] transition-colors disabled:opacity-60"
               >
-                Ro'yxatdan o'tish
-              </Button>
-              <HStack w="full">
-                <Box flex={1} h="1px" bg="gray.200" />
-                <Text fontSize="sm" color="gray.400">yoki</Text>
-                <Box flex={1} h="1px" bg="gray.200" />
-              </HStack>
-              <Button w="full" variant="outline" borderRadius="full">
+                {loading ? 'Yuklanmoqda...' : "Ro'yxatdan o'tish"}
+              </button>
+              <div className="flex items-center gap-3">
+                <div className="flex-1 h-px bg-gray-200"></div>
+                <span className="text-sm text-gray-400">yoki</span>
+                <div className="flex-1 h-px bg-gray-200"></div>
+              </div>
+              <button className="w-full py-2.5 border border-gray-300 rounded-full text-sm font-medium hover:bg-gray-50 transition-colors">
                 G — Google bilan kirish
-              </Button>
-            </VStack>
+              </button>
+            </div>
           )}
-        </Box>
-      </Flex>
-    </Flex>
+        </div>
+      </div>
+    </div>
   )
 }

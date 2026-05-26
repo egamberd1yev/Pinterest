@@ -1,74 +1,55 @@
-import {
-  Flex, Input, IconButton, Text, Box
-} from '@chakra-ui/react'
-// InputGroup o'rniga v3 da InputGroup elementi mana shunday import qilinadi
-import { InputGroup } from '../components/ui/' 
-// Avatar snippetidan foydalanamiz (agar snippet ochmagan bo'lsangiz, quyidagi Avatar qo'llanmasiga qarang)
-import { Avatar } from '../components/ui/avatar' 
-import { FiSearch, FiBell } from 'react-icons/fi'
+import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { FiSearch, FiBell, FiPlus } from 'react-icons/fi'
 
 export default function Navbar() {
   const navigate = useNavigate()
+  const [search, setSearch] = useState('')
 
   return (
-    <Flex
-      px={4} py={3} align="center" gap={3}
-      borderBottom="1px solid" borderColor="gray.200"
-      position="sticky" top={0} zIndex={10} bg="white"
-    >
-      {/* Logo */}
-      <Text fontSize="3xl" color="#E60023" cursor="pointer" onClick={() => navigate('/')}>
+    <nav className="flex items-center gap-3 px-4 py-3 border-b border-gray-200 bg-white sticky top-0 z-10">
+      <span
+        className="text-3xl text-[#E60023] cursor-pointer"
+        onClick={() => navigate('/')}
+      >
         📌
-      </Text>
+      </span>
 
-      {/* Bosh sahifa tugmasi */}
-      <Text
-        fontWeight="600" px={4} py={2} borderRadius="full"
-        bg="gray.900" color="white" cursor="pointer" fontSize="sm"
+      <button
+        className="px-4 py-2 bg-gray-900 text-white rounded-full text-sm font-medium"
+        onClick={() => navigate('/')}
       >
         Bosh sahifa
-      </Text>
+      </button>
 
-      {/* Yaratish tugmasi */}
-      <Text
-        fontWeight="600" px={4} py={2} borderRadius="full"
-        color="gray.600" cursor="pointer" fontSize="sm"
-        _hover={{ bg: 'gray.100' }}
+      <button
+        className="px-4 py-2 text-gray-600 rounded-full text-sm font-medium hover:bg-gray-100 transition-colors"
         onClick={() => navigate('/upload')}
       >
         Yaratish
-      </Text>
+      </button>
 
-      {/* Qidiruv qismi (Chakra v3 InputGroup) */}
-      <Box flex={1}>
-        <InputGroup startElement={<FiSearch color="gray" />} w="full">
-          <Input
-            placeholder="Qidirish..."
-            borderRadius="full"
-            bg="gray.100"
-            border="none"
-            _focus={{ bg: 'white', border: '1px solid', borderColor: 'gray.300' }}
-          />
-        </InputGroup>
-      </Box>
+      <div className="flex-1 flex items-center bg-gray-100 rounded-full px-4 py-2 gap-2">
+        <FiSearch className="text-gray-400 text-lg" />
+        <input
+          type="text"
+          placeholder="Qidirish..."
+          value={search}
+          onChange={e => setSearch(e.target.value)}
+          className="bg-transparent outline-none text-sm w-full text-gray-700 placeholder-gray-400"
+        />
+      </div>
 
-      {/* Bildirishnoma tugmasi (v3 da icon prop o'rniga children) */}
-      <IconButton
-        borderRadius="full"
-        variant="ghost"
-        aria-label="Bildirishnomalar"
-      >
-        <FiBell />
-      </IconButton>
+      <button className="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center hover:bg-gray-200 transition-colors">
+        <FiBell className="text-gray-700 text-lg" />
+      </button>
 
-      {/* Profil rasmi (Avatar) */}
-      <Avatar
-        size="sm"
-        fallback="U" // Foydalanuvchi ismi bosh harfi (User)
-        cursor="pointer"
+      <div
+        className="w-9 h-9 rounded-full bg-[#E60023] flex items-center justify-center cursor-pointer text-white font-medium text-sm"
         onClick={() => navigate('/profile')}
-      />
-    </Flex>
+      >
+        U
+      </div>
+    </nav>
   )
 }
