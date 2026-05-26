@@ -3,6 +3,7 @@ import LoginPage from './pages/LoginPage'
 import HomePage from './pages/HomePage'
 import UploadPage from './pages/UploadPage'
 import ProfilePage from './pages/ProfilePage'
+import PinDetailPage from './pages/PinDetailPage'
 
 function App() {
   return (
@@ -11,6 +12,7 @@ function App() {
       <Route path="/login" element={<LoginPage />} />
       <Route path="/upload" element={<UploadPage />} />
       <Route path="/profile" element={<ProfilePage />} />
+      <Route path="/pin/:id" element={<PinDetailPage />} />
     </Routes>
   )
 }

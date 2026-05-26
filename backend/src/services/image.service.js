@@ -1,19 +1,19 @@
 import * as imageRepo from "../repositories/image.repo.js"
 import fs from "fs"
 
-export const uploadImage = async (file, userId, body) => {
+export const uploadImage = async (file, body, userId) => {
   if (!file) {
     const error = new Error("Fayl yuklanmadi")
     error.statusCode = 400
     throw error
   }
 
-const image = await imageRepo.saveImage({
+  const image = await imageRepo.saveImage({
     title: body.title,
     description: body.description || "",
     tags: body.tags ? body.tags.split(",") : [],
     filename: file.filename,
-    filepath: file.path,
+    filepath: `uploads/${file.filename}`, // ← faqat shu qism saqlanadi
     mimetype: file.mimetype,
     size: file.size,
     user: { id: userId }
@@ -21,6 +21,7 @@ const image = await imageRepo.saveImage({
 
   return image
 }
+
 
 export const getAllImages = async () => {
   return imageRepo.findAllImages()
