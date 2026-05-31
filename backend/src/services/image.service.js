@@ -1,7 +1,7 @@
 import * as imageRepo from "../repositories/image.repo.js"
 import fs from "fs"
 
-export const uploadImage = async (file, body, userId) => {
+export const uploadImage = async (file,userId,body) => {
   if (!file) {
     const error = new Error("Fayl yuklanmadi")
     error.statusCode = 400
@@ -13,7 +13,7 @@ export const uploadImage = async (file, body, userId) => {
     description: body.description || "",
     tags: body.tags ? body.tags.split(",") : [],
     filename: file.filename,
-    filepath: `uploads/${file.filename}`, // ← faqat shu qism saqlanadi
+    filepath: `uploads/${file.filename}`,
     mimetype: file.mimetype,
     size: file.size,
     user: { id: userId }
