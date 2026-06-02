@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import Navbar from '../components/Navbar'
 import PinCard from '../components/PinCard'
 import api from '../service/api'
@@ -9,20 +10,27 @@ export default function HomePage() {
   const [pins, setPins] = useState([])
   const [loading, setLoading] = useState(true)
   const [activeCategory, setActiveCategory] = useState('Hammasi')
+  const navigate = useNavigate() // ✅ navigate qo'shildi
 
   useEffect(() => {
     const fetchPins = async () => {
       try {
         const res = await api.get('/images')
+        console.log('API dan kelgan data:', res.data) // ✅ debug uchun
         setPins(res.data)
       } catch (err) {
-        console.error(err)
+        console.error('API xatosi:', err)
       } finally {
         setLoading(false)
       }
     }
     fetchPins()
   }, [])
+
+  // ✅ Kategoriya bo'yicha filter
+  const filteredPins = activeCategory === 'Hammasi'
+    ? pins
+    : pins.filter(pin => pin.category === activeCategory)
 
   if (loading) return (
     <div className="flex items-center justify-center h-screen">
@@ -52,12 +60,12 @@ export default function HomePage() {
       </div>
 
       {/* Pin grid */}
-      {pins.length === 0 ? (
+      {filteredPins.length === 0 ? ( // ✅ filteredPins ishlatildi
         <div className="flex flex-col items-center justify-center mt-20 gap-3">
           <span className="text-5xl">📌</span>
           <p className="text-gray-400 text-lg">Hali pinlar yo'q</p>
           <button
-            onClick={() => {}}
+            onClick={() => navigate('/upload')} // ✅ navigate ishlaydi endi
             className="px-6 py-2.5 bg-[#E60023] text-white rounded-full text-sm font-medium hover:bg-[#c0001d]"
           >
             Birinchi piningizni yarating
@@ -68,7 +76,7 @@ export default function HomePage() {
           className="p-4"
           style={{ columnCount: 4, columnGap: '12px' }}
         >
-          {pins.map(pin => (
+          {filteredPins.map(pin => ( // ✅ filteredPins ishlatildi
             <PinCard key={pin.id} pin={pin} />
           ))}
         </div>
@@ -76,7 +84,7 @@ export default function HomePage() {
 
       {/* Yuklash tugmasi */}
       <button
-        onClick={() => navigate('/upload')}
+        onClick={() => navigate('/upload')} // ✅ navigate ishlaydi endi
         className="fixed bottom-6 right-6 w-14 h-14 bg-[#E60023] text-white rounded-full flex items-center justify-center text-2xl shadow-lg hover:bg-[#c0001d] transition-colors"
       >
         +
