@@ -1,24 +1,21 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { useAuth } from '../App'
 import api from '../service/api'
 
 export default function LoginPage() {
   const navigate = useNavigate()
-  const { login } = useAuth()
   const [activeTab, setActiveTab] = useState('login')
   const [loginData, setLoginData] = useState({ username: '', password: '' })
   const [registerData, setRegisterData] = useState({ username: '', email: '', password: '' })
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
 
-  const handleLogin = async (e) => {
-    e.preventDefault()
+  const handleLogin = async () => {
     setLoading(true)
     setError('')
     try {
       const res = await api.post('/user/login', loginData)
-      login(res.data.accessToken)
+      localStorage.setItem('accessToken', res.data.accesToken)
       localStorage.setItem('refreshToken', res.data.refreshToken)
       navigate('/')
     } catch (err) {
@@ -28,18 +25,16 @@ export default function LoginPage() {
     }
   }
 
-  const handleRegister = async (e) => {
-    e.preventDefault()
+  const handleRegister = async () => {
     setLoading(true)
     setError('')
     try {
       await api.post('/user/register', registerData)
-      // Register qilgach avtomatik login
       const res = await api.post('/user/login', {
         username: registerData.username,
         password: registerData.password
       })
-      login(res.data.accessToken)
+      localStorage.setItem('accessToken', res.data.accesToken)
       localStorage.setItem('refreshToken', res.data.refreshToken)
       navigate('/')
     } catch (err) {
@@ -51,7 +46,7 @@ export default function LoginPage() {
 
   return (
     <div className="flex min-h-screen">
-      {/* Chap tomon - qizil panel */}
+      {/* Chap tomon */}
       <div className="hidden md:flex flex-1 bg-[#E60023] flex-col items-center justify-center p-10">
         <span className="text-7xl">📌</span>
         <h1 className="text-3xl font-bold text-white text-center mt-4">
@@ -68,7 +63,7 @@ export default function LoginPage() {
         </div>
       </div>
 
-      {/* O'ng tomon - forma */}
+      {/* O'ng tomon */}
       <div className="flex flex-1 flex-col items-center justify-center p-8 bg-white">
         <span className="text-5xl mb-6">📌</span>
 
@@ -102,17 +97,15 @@ export default function LoginPage() {
         )}
 
         <div className="w-full max-w-sm">
-
           {/* Login */}
           {activeTab === 'login' && (
-            <form onSubmit={handleLogin} className="flex flex-col gap-4">
+            <div className="flex flex-col gap-4">
               <div>
                 <label className="text-sm font-medium text-gray-700 mb-1 block">
                   Foydalanuvchi nomi
                 </label>
                 <input
                   type="text"
-                  autoComplete="username"
                   placeholder="username"
                   value={loginData.username}
                   onChange={e => setLoginData({ ...loginData, username: e.target.value })}
@@ -126,15 +119,16 @@ export default function LoginPage() {
                 <input
                   type="password"
                   placeholder="••••••••"
-                  autoComplete="current-password"
                   value={loginData.password}
                   onChange={e => setLoginData({ ...loginData, password: e.target.value })}
+                  onKeyDown={e => e.key === 'Enter' && handleLogin()}
                   className="w-full px-4 py-2.5 border border-gray-300 rounded-xl text-sm focus:outline-none focus:border-[#E60023]"
                 />
               </div>
               <button
-                type="submit"
+                type="button"
                 disabled={loading}
+                onClick={handleLogin}
                 className="w-full py-2.5 bg-[#E60023] text-white rounded-full font-medium hover:bg-[#c0001d] transition-colors disabled:opacity-60"
               >
                 {loading ? 'Kirish...' : 'Kirish'}
@@ -144,28 +138,24 @@ export default function LoginPage() {
                 <span className="text-sm text-gray-400">yoki</span>
                 <div className="flex-1 h-px bg-gray-200"></div>
               </div>
-              <button
-                type="button"
-                className="w-full py-2.5 border border-gray-300 rounded-full text-sm font-medium hover:bg-gray-50 transition-colors"
-              >
+              <button type="button" className="w-full py-2.5 border border-gray-300 rounded-full text-sm font-medium hover:bg-gray-50 transition-colors">
                 G — Google bilan kirish
               </button>
               <p className="text-sm text-gray-500 text-center underline cursor-pointer">
                 Parolni unutdingizmi?
               </p>
-            </form>
+            </div>
           )}
 
           {/* Register */}
           {activeTab === 'register' && (
-            <form onSubmit={handleRegister} className="flex flex-col gap-4">
+            <div className="flex flex-col gap-4">
               <div>
                 <label className="text-sm font-medium text-gray-700 mb-1 block">
                   Foydalanuvchi nomi
                 </label>
                 <input
                   type="text"
-                  autoComplete="username"
                   placeholder="username"
                   value={registerData.username}
                   onChange={e => setRegisterData({ ...registerData, username: e.target.value })}
@@ -178,7 +168,6 @@ export default function LoginPage() {
                 </label>
                 <input
                   type="email"
-                  autoComplete="email"
                   placeholder="email@example.com"
                   value={registerData.email}
                   onChange={e => setRegisterData({ ...registerData, email: e.target.value })}
@@ -192,15 +181,16 @@ export default function LoginPage() {
                 <input
                   type="password"
                   placeholder="••••••••"
-                  autoComplete="new-password"
                   value={registerData.password}
                   onChange={e => setRegisterData({ ...registerData, password: e.target.value })}
+                  onKeyDown={e => e.key === 'Enter' && handleRegister()}
                   className="w-full px-4 py-2.5 border border-gray-300 rounded-xl text-sm focus:outline-none focus:border-[#E60023]"
                 />
               </div>
               <button
-                type="submit"
+                type="button"
                 disabled={loading}
+                onClick={handleRegister}  
                 className="w-full py-2.5 bg-[#E60023] text-white rounded-full font-medium hover:bg-[#c0001d] transition-colors disabled:opacity-60"
               >
                 {loading ? 'Yuklanmoqda...' : "Ro'yxatdan o'tish"}
@@ -210,15 +200,11 @@ export default function LoginPage() {
                 <span className="text-sm text-gray-400">yoki</span>
                 <div className="flex-1 h-px bg-gray-200"></div>
               </div>
-              <button
-                type="button"
-                className="w-full py-2.5 border border-gray-300 rounded-full text-sm font-medium hover:bg-gray-50 transition-colors"
-              >
+              <button type="button" className="w-full py-2.5 border border-gray-300 rounded-full text-sm font-medium hover:bg-gray-50 transition-colors">
                 G — Google bilan kirish
               </button>
-            </form>
+            </div>
           )}
-
         </div>
       </div>
     </div>

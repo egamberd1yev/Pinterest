@@ -39,7 +39,7 @@ function ProtectedRoute({ children }) {
   const { user } = useAuth()
   return user ? children : <Navigate to="/login" replace />
 }
-console.log('Token:', localStorage.getItem('token'));
+
 
 // ── App ───────────────────────────────────────────────
 function App() {
