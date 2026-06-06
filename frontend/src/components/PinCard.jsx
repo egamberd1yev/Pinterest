@@ -3,10 +3,13 @@ import { useNavigate } from 'react-router-dom'
 
 export default function PinCard({ pin }) {
   const [hovered, setHovered] = useState(false)
+  const [imgError, setImgError] = useState(false)
   const navigate = useNavigate()
 
-  // Windows backslash ni forward slash ga o'girish
   const imageUrl = `http://localhost:5000/${pin.filepath.replace(/\\/g, '/')}`
+
+  // Rasm yo'q bo'lsa butun kartani yashir
+  if (imgError) return null
 
   return (
     <div
@@ -19,10 +22,8 @@ export default function PinCard({ pin }) {
         <img
           src={imageUrl}
           alt={pin.title}
+          onError={() => setImgError(true)} // ← faqat bitta onError
           className="w-full block rounded-2xl"
-          onError={(e) => {
-            e.target.style.display = 'none'
-          }}
         />
 
         {hovered && (

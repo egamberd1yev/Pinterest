@@ -13,7 +13,7 @@ export default function PinDetailPage() {
   useEffect(() => {
     const fetchPin = async () => {
       try {
-        const res = await api.get(`/images/${id}`)
+        const res = await api.get(`/image/${id}`)
         console.log('Pin data:', res.data)
         setPin(res.data)
       } catch (err) {

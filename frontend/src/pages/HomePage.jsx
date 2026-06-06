@@ -15,8 +15,7 @@ export default function HomePage() {
   useEffect(() => {
     const fetchPins = async () => {
       try {
-        const res = await api.get('/images')
-        console.log('API dan kelgan data:', res.data) // ✅ debug uchun
+        const res = await api.get('/image')
         setPins(res.data)
       } catch (err) {
         console.error('API xatosi:', err)
