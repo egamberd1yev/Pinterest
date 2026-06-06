@@ -103,3 +103,12 @@ const generateRefreshToken = (user) => {
     { expiresIn: "15d"}
   )
 }
+export const getMe = async (userId) => {
+  const user = await userRepo.findUserById(userId)
+  if (!user) throw new Error("User not found")
+  const sanitizeUser = (user) => {
+  const { password, refreshToken, ...userWithoutPassword } = user
+  return userWithoutPassword
+}
+  return sanitizeUser(user)
+}

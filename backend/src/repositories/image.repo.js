@@ -27,3 +27,11 @@ export const deleteImage = async (id) => {
 
   return await imageRepo.delete(id);
 };
+
+export const findImagesByUserId = async (userId) => {
+  const imageRepo = getImageRepository()
+  return imageRepo.find({
+    where: { user: { id: userId } },
+    relations: { user: true }
+  })
+}

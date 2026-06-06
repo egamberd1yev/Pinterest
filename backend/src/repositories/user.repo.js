@@ -43,3 +43,18 @@ export const updateUser = async (id, data) => {
   const userRepo = getRepository()
   return userRepo.update(id, data)
 }
+
+export const findUserById = async (id) => {
+  const userRepo = getRepository()
+
+  return userRepo.findOne({
+    where: { id },
+    select: {
+      id: true,
+      username: true,
+      email: true,
+      role: true
+      // password YO'Q - xavfsizlik uchun
+    }
+  })
+}

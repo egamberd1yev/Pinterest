@@ -59,3 +59,7 @@ export const deleteImage = async (id) => {
 
   return imageRepo.deleteImage(id);
 };
+
+export const getMyImages = async (userId) => {
+  return imageRepo.findImagesByUserId(userId)
+}

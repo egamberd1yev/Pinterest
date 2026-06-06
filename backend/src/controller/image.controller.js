@@ -35,3 +35,12 @@ export const deleteImage = async (req, res, next) => {
     next(error)
   }
 }
+
+export const getMyImages = async (req, res, next) => {
+  try {
+    const images = await imageService.getMyImages(req.user.id)
+    res.json(images)
+  } catch (error) {
+    next(error)
+  }
+}
