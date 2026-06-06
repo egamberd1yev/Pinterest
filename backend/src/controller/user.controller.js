@@ -26,3 +26,12 @@ export const register = async (req, res, next) => {
     next(error)
   }
 }
+
+export const getMe = async (req, res, next) => {
+  try {
+    const user = await userService.getMe(req.user.id)
+    res.json(user)
+  } catch (error) {
+    next(error)
+  }
+}

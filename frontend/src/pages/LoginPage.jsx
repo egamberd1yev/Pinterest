@@ -1,21 +1,24 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { useAuth } from '../App'
 import api from '../service/api'
 
 export default function LoginPage() {
   const navigate = useNavigate()
+  const { login } = useAuth()
   const [activeTab, setActiveTab] = useState('login')
   const [loginData, setLoginData] = useState({ username: '', password: '' })
   const [registerData, setRegisterData] = useState({ username: '', email: '', password: '' })
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
 
-  const handleLogin = async () => {
+  const handleLogin = async (e) => {
+    e.preventDefault()
     setLoading(true)
     setError('')
     try {
       const res = await api.post('/user/login', loginData)
-      localStorage.setItem('accessToken', res.data.accesToken)
+      login(res.data.accessToken)
       localStorage.setItem('refreshToken', res.data.refreshToken)
       navigate('/')
     } catch (err) {
@@ -25,11 +28,19 @@ export default function LoginPage() {
     }
   }
 
-  const handleRegister = async () => {
+  const handleRegister = async (e) => {
+    e.preventDefault()
     setLoading(true)
     setError('')
     try {
       await api.post('/user/register', registerData)
+      // Register qilgach avtomatik login
+      const res = await api.post('/user/login', {
+        username: registerData.username,
+        password: registerData.password
+      })
+      login(res.data.accessToken)
+      localStorage.setItem('refreshToken', res.data.refreshToken)
       navigate('/')
     } catch (err) {
       setError(err.response?.data?.message || 'Xato yuz berdi')
@@ -49,7 +60,6 @@ export default function LoginPage() {
         <p className="text-white/75 mt-3 text-center">
           Dunyodagi eng yaxshi g'oyalar shu yerda
         </p>
-        {/* Mini pin preview */}
         <div className="grid grid-cols-2 gap-2 mt-8 w-44">
           <div className="h-20 bg-white/20 rounded-xl"></div>
           <div className="h-14 bg-white/20 rounded-xl"></div>
@@ -65,18 +75,20 @@ export default function LoginPage() {
         {/* Tablar */}
         <div className="flex bg-gray-100 rounded-xl p-1 w-full max-w-sm mb-6">
           <button
+            type="button"
             className={`flex-1 py-2 rounded-lg text-sm font-medium transition-all ${
               activeTab === 'login' ? 'bg-[#E60023] text-white' : 'text-gray-600 hover:bg-gray-200'
             }`}
-            onClick={() => setActiveTab('login')}
+            onClick={() => { setActiveTab('login'); setError('') }}
           >
             Kirish
           </button>
           <button
+            type="button"
             className={`flex-1 py-2 rounded-lg text-sm font-medium transition-all ${
               activeTab === 'register' ? 'bg-[#E60023] text-white' : 'text-gray-600 hover:bg-gray-200'
             }`}
-            onClick={() => setActiveTab('register')}
+            onClick={() => { setActiveTab('register'); setError('') }}
           >
             Ro'yxat
           </button>
@@ -90,15 +102,17 @@ export default function LoginPage() {
         )}
 
         <div className="w-full max-w-sm">
+
           {/* Login */}
           {activeTab === 'login' && (
-            <div className="flex flex-col gap-4">
+            <form onSubmit={handleLogin} className="flex flex-col gap-4">
               <div>
                 <label className="text-sm font-medium text-gray-700 mb-1 block">
                   Foydalanuvchi nomi
                 </label>
                 <input
                   type="text"
+                  autoComplete="username"
                   placeholder="username"
                   value={loginData.username}
                   onChange={e => setLoginData({ ...loginData, username: e.target.value })}
@@ -112,14 +126,14 @@ export default function LoginPage() {
                 <input
                   type="password"
                   placeholder="••••••••"
+                  autoComplete="current-password"
                   value={loginData.password}
                   onChange={e => setLoginData({ ...loginData, password: e.target.value })}
-                  onKeyDown={e => e.key === 'Enter' && handleLogin()}
                   className="w-full px-4 py-2.5 border border-gray-300 rounded-xl text-sm focus:outline-none focus:border-[#E60023]"
                 />
               </div>
               <button
-                onClick={handleLogin}
+                type="submit"
                 disabled={loading}
                 className="w-full py-2.5 bg-[#E60023] text-white rounded-full font-medium hover:bg-[#c0001d] transition-colors disabled:opacity-60"
               >
@@ -130,24 +144,28 @@ export default function LoginPage() {
                 <span className="text-sm text-gray-400">yoki</span>
                 <div className="flex-1 h-px bg-gray-200"></div>
               </div>
-              <button className="w-full py-2.5 border border-gray-300 rounded-full text-sm font-medium hover:bg-gray-50 transition-colors">
+              <button
+                type="button"
+                className="w-full py-2.5 border border-gray-300 rounded-full text-sm font-medium hover:bg-gray-50 transition-colors"
+              >
                 G — Google bilan kirish
               </button>
               <p className="text-sm text-gray-500 text-center underline cursor-pointer">
                 Parolni unutdingizmi?
               </p>
-            </div>
+            </form>
           )}
 
           {/* Register */}
           {activeTab === 'register' && (
-            <div className="flex flex-col gap-4">
+            <form onSubmit={handleRegister} className="flex flex-col gap-4">
               <div>
                 <label className="text-sm font-medium text-gray-700 mb-1 block">
                   Foydalanuvchi nomi
                 </label>
                 <input
                   type="text"
+                  autoComplete="username"
                   placeholder="username"
                   value={registerData.username}
                   onChange={e => setRegisterData({ ...registerData, username: e.target.value })}
@@ -160,6 +178,7 @@ export default function LoginPage() {
                 </label>
                 <input
                   type="email"
+                  autoComplete="email"
                   placeholder="email@example.com"
                   value={registerData.email}
                   onChange={e => setRegisterData({ ...registerData, email: e.target.value })}
@@ -173,14 +192,14 @@ export default function LoginPage() {
                 <input
                   type="password"
                   placeholder="••••••••"
+                  autoComplete="new-password"
                   value={registerData.password}
                   onChange={e => setRegisterData({ ...registerData, password: e.target.value })}
-                  onKeyDown={e => e.key === 'Enter' && handleRegister()}
                   className="w-full px-4 py-2.5 border border-gray-300 rounded-xl text-sm focus:outline-none focus:border-[#E60023]"
                 />
               </div>
               <button
-                onClick={handleRegister}
+                type="submit"
                 disabled={loading}
                 className="w-full py-2.5 bg-[#E60023] text-white rounded-full font-medium hover:bg-[#c0001d] transition-colors disabled:opacity-60"
               >
@@ -191,11 +210,15 @@ export default function LoginPage() {
                 <span className="text-sm text-gray-400">yoki</span>
                 <div className="flex-1 h-px bg-gray-200"></div>
               </div>
-              <button className="w-full py-2.5 border border-gray-300 rounded-full text-sm font-medium hover:bg-gray-50 transition-colors">
+              <button
+                type="button"
+                className="w-full py-2.5 border border-gray-300 rounded-full text-sm font-medium hover:bg-gray-50 transition-colors"
+              >
                 G — Google bilan kirish
               </button>
-            </div>
+            </form>
           )}
+
         </div>
       </div>
     </div>

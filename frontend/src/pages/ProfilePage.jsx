@@ -17,10 +17,15 @@ export default function ProfilePage() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const res = await api.get('/images')
-        setPins(res.data)
+        const userRes = await api.get('/user/me')
+        console.log('User:', userRes.data)  // backend nima qaytarishini ko'rish uchun
+        setUser(userRes.data)
+
+        const pinsRes = await api.get('/image/my')
+        console.log('Pinlar:', pinsRes.data)
+        setPins(pinsRes.data)
       } catch (err) {
-        console.error(err)
+        console.error('Xato:', err.response?.status, err.response?.data)
       } finally {
         setLoading(false)
       }
@@ -28,23 +33,24 @@ export default function ProfilePage() {
     fetchData()
   }, [])
 
+  const initial = user?.username?.charAt(0).toUpperCase() || '?'
+
   return (
     <div>
       <Navbar />
 
-      {/* Profil header */}
       <div className="flex flex-col items-center py-8 px-4">
         <div className="w-24 h-24 rounded-full bg-[#E60023] flex items-center justify-center text-white text-3xl font-bold mb-4">
-          U
+          {initial}
         </div>
 
-        <h1 className="text-2xl font-semibold text-gray-900">Foydalanuvchi</h1>
-        <p className="text-gray-500 text-sm mt-1">@username</p>
-        <p className="text-gray-700 text-sm mt-3 text-center max-w-sm">
-          Dizayn, tabiat va san'atga qiziqaman ✨
+        <h1 className="text-2xl font-semibold text-gray-900">
+          {user?.username ?? 'Yuklanmoqda...'}
+        </h1>
+        <p className="text-gray-500 text-sm mt-1">
+          {user?.email ?? ''}
         </p>
 
-        {/* Statistika */}
         <div className="flex gap-8 mt-4">
           <div className="text-center">
             <p className="font-semibold text-gray-900">{pins.length}</p>
@@ -60,7 +66,6 @@ export default function ProfilePage() {
           </div>
         </div>
 
-        {/* Tugmalar */}
         <div className="flex gap-3 mt-5">
           <button className="px-5 py-2 bg-gray-100 rounded-full text-sm font-medium hover:bg-gray-200 transition-colors">
             Profilni tahrirlash
@@ -74,7 +79,6 @@ export default function ProfilePage() {
         </div>
       </div>
 
-      {/* Tablar */}
       <div className="flex justify-center border-b border-gray-200">
         {tabs.map(tab => (
           <button
@@ -91,7 +95,6 @@ export default function ProfilePage() {
         ))}
       </div>
 
-      {/* Kontent */}
       {loading ? (
         <div className="flex justify-center mt-20">
           <div className="w-10 h-10 border-4 border-[#E60023] border-t-transparent rounded-full animate-spin"></div>
