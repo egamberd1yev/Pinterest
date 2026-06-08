@@ -1,3 +1,4 @@
+import { ILike } from "typeorm";
 import { AppDataSource } from "../config/db.js";
 import { ImageEntity } from "../models/image.entity.js";
 
@@ -16,8 +17,8 @@ export const findAllImages = async () => {
 
 export const findImageById = async (id) => {
   const imageRepo = getImageRepository()
-  return imageRepo.findOne({  
-    where: { id },
+  return imageRepo.findOne({
+    where: { id: Number(id) },
     relations: { user: true }
   })
 }
@@ -35,3 +36,16 @@ export const findImagesByUserId = async (userId) => {
     relations: { user: true }
   })
 }
+
+
+//search ishashi uchun yangi funksiya
+export const searchImageInDb = async (keyword) => {
+  const imageRepo = getImageRepository();
+  return imageRepo.find({
+    where: [
+      {title: ILike(`%${keyword}%`) },
+      { tags: ILike(`%${keyword}%`) }
+    ],
+    relations: { user: true }
+  });
+};

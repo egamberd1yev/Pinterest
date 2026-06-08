@@ -1,5 +1,6 @@
 import * as imageRepo from "../repositories/image.repo.js"
 import fs from "fs"
+import path from "path"
 
 export const uploadImage = async (file,userId,body) => {
   if (!file) {
@@ -22,8 +23,11 @@ export const uploadImage = async (file,userId,body) => {
   return image
 }
 
-
-export const getAllImages = async () => {
+//bu yerga ham search uchun funktsiya yangilandi
+export const getAllImages = async (keyword) => {
+  if (keyword) {
+    return await imageRepo.searchImageInDb(keyword);
+  }
   return imageRepo.findAllImages()
 }
 

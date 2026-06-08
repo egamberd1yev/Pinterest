@@ -80,7 +80,7 @@ export default function UploadPage() {
 
   return (
     <div>
-      <Navbar />
+      <Navbar search="" onSearch={() => {}} onSubmit={() => {}} />
 
       <div className="max-w-4xl mx-auto px-4 py-6">
         {/* Header */}

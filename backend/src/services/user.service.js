@@ -41,13 +41,13 @@ export const login = async ({username, password}) => {
   const isMatch = await bcrypt.compare(password, user.password)
   if (!isMatch) throw new Error("Incorrect password") 
 
-  const accesToken = generateAccessToken(user)
+  const accessToken = generateAccessToken(user)
   const refreshToken = generateRefreshToken(user)
 
   await userRepo.updateUser(user.id, { refreshToken }) 
 
   const { password: _, ...userWithoutPassword } = user
-  return { user: userWithoutPassword, accesToken, refreshToken }
+  return { user: userWithoutPassword, accessToken, refreshToken }
 }
 
 export const register = async (data) => {

@@ -15,8 +15,9 @@ export default function LoginPage() {
     setError('')
     try {
       const res = await api.post('/user/login', loginData)
-      localStorage.setItem('accessToken', res.data.accesToken)
+      localStorage.setItem('accessToken', res.data.accessToken)
       localStorage.setItem('refreshToken', res.data.refreshToken)
+      localStorage.setItem('user', JSON.stringify(res.data.user))
       navigate('/')
     } catch (err) {
       setError(err.response?.data?.message || 'Xato yuz berdi')
@@ -34,8 +35,9 @@ export default function LoginPage() {
         username: registerData.username,
         password: registerData.password
       })
-      localStorage.setItem('accessToken', res.data.accesToken)
+      localStorage.setItem('accessToken', res.data.accessToken)
       localStorage.setItem('refreshToken', res.data.refreshToken)
+      localStorage.setItem('user', JSON.stringify(res.data.user))
       navigate('/')
     } catch (err) {
       setError(err.response?.data?.message || 'Xato yuz berdi')
@@ -190,7 +192,7 @@ export default function LoginPage() {
               <button
                 type="button"
                 disabled={loading}
-                onClick={handleRegister}  
+                onClick={handleRegister}
                 className="w-full py-2.5 bg-[#E60023] text-white rounded-full font-medium hover:bg-[#c0001d] transition-colors disabled:opacity-60"
               >
                 {loading ? 'Yuklanmoqda...' : "Ro'yxatdan o'tish"}
